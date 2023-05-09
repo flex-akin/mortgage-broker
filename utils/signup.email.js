@@ -22,11 +22,11 @@ exports.sendDetails = async(details) =>{
         const template = handlebars.compile(source)
         const data = details
           var mailOptions = {
-              from: "info@ivantage.africa",
+              from: "info@imperialmortgagebank.com",
               to: details.email,
               html: template(data)
             };
-            mailOptions.subject = "USER CREDENTILAS";
+            mailOptions.subject = "USER CREDENTIALS";
             const reponse = await smtpTransporter.sendMail(mailOptions)
       }catch(error){
         return {success: false, message: error}

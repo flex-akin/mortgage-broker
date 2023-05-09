@@ -1,11 +1,13 @@
 const db = require("../models");
 const Realtor = db.realtor
+const sendToken = require("../utils/jwt")
+const bcrypt = require("bcryptjs")
+
 
 const {sendDetails} = require("../utils/signup.email");
 
 exports.createRealtor = async (req, res) => {
   try {
-    const password = Math.random().toString(36).substring(2)
     var unique = new Date().valueOf();
     unique = String(unique).substring(5, 13)
 
@@ -22,7 +24,7 @@ exports.createRealtor = async (req, res) => {
       phone_number: req.body.phone_number,
       id_number: req.body.id_number,
       username: req.body.username,
-      password: password,
+      password: req.body.password,
       user_id: unique,
       id_type : req.body.id_type,
       cv_URL: cv_URL.location,
@@ -32,7 +34,7 @@ exports.createRealtor = async (req, res) => {
     });
     const realtor  = {
         name : req.body.name,
-        password : password,
+        password : req.body.password,
         user_id : unique,
         username : req.body.username,
         email : req.body.email
@@ -61,4 +63,54 @@ exports.createRealtor = async (req, res) => {
 };
 
 
-exports
+exports.logIn = async (req, res) => {
+    try {
+      const realtor = await Realtor.findOne({
+        where: {
+          user_id: req.body.user_id,
+        },
+      });
+      if (!realtor) {
+        res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+      const password = req.body.password
+  
+      const checkPassword = bcrypt.compareSync(password, realtor.password);
+      if (!checkPassword) {
+        return res.status(400).json({
+          success: false,
+          message: "Information Mismatch, password is not invalid",
+        });
+      }
+      const realtorDetails = {
+        name: realtor.name,
+        username: realtor.username,
+        user_id: realtor.user_id,
+        passport_URL: realtor.passport_URL,
+      };
+  
+      const token = sendToken(realtorDetails, res);
+      if (!token) {
+        return res.status(400).json({
+          success: false,
+          message: "JWT could not be generated",
+        });
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: "Logged in succesffully",
+        realtorDetails,
+        auth_token : token
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+        stack: error
+      });
+    }
+  };
