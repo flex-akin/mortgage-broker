@@ -114,3 +114,25 @@ exports.logIn = async (req, res) => {
       });
     }
   };
+
+  exports.resetProfile = async(req, res) => {
+    try{
+        await Realtor.update(req.body,{
+            where: {
+                user_id : req.params.user_id
+            }
+        })
+        res.status(200).json({
+            success: true,
+            message: "updated",
+          });
+
+    }
+    catch(error){
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+            stack: error
+          });        
+    }
+  }

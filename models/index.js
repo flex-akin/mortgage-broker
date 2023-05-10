@@ -37,6 +37,8 @@ db.Sequelize = Sequelize;
 
 db.realtor = require("./realtors.models")(sequelize, Sequelize);
 db.transaction = require("./transactions.models")(sequelize, Sequelize);
+db.transaction_upload = require("./transactionsUploads.models")(sequelize, Sequelize);
+
 
 
 db.realtor.hasMany(db.transaction, {
@@ -46,5 +48,11 @@ db.realtor.hasMany(db.transaction, {
   onUpdate: "CASCADE",
 });
 
+db.transaction.hasMany(db.transaction_upload, {
+  sourceKey: "transaction_code",
+  foreignKey: "transaction_code",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 module.exports = db;

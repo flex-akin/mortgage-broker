@@ -36,7 +36,15 @@ module.exports = (sequelize, Sequelize) => {
             }
           },
 
-
+          transaction_code: {
+            type: Sequelize.STRING(20),
+            allowNull: false,
+            unique: true,
+            validate: {
+              notNull: true,
+              notEmpty: true
+            }
+          },
 
         employmnet: {
             type: Sequelize.STRING(50),
@@ -56,11 +64,11 @@ module.exports = (sequelize, Sequelize) => {
           },
 
           gross_annual_income: {
-            type: Sequelize.DECIMAL(18, 2),
+            type: Sequelize.STRING(30),
           },
 
           net_monthly_income: {
-            type: Sequelize.DECIMAL(18, 2),
+            type: Sequelize.STRING(30),
           },
 
           name_of_business: {
@@ -72,13 +80,12 @@ module.exports = (sequelize, Sequelize) => {
           },
 
           gross_annual_turnover: {
-            type: Sequelize.DECIMAL(18, 2),
+            type: Sequelize.STRING(30),
           },
 
           sector: {
             type: Sequelize.STRING(100),
           },
-
 
           property_location: {
             type: Sequelize.STRING(50),
@@ -125,7 +132,7 @@ module.exports = (sequelize, Sequelize) => {
           },
 
 
-          format: {
+          property_format: {
             type: Sequelize.STRING(100),
             allowNull: false,
             validate: {
@@ -135,7 +142,7 @@ module.exports = (sequelize, Sequelize) => {
           },
 
           property_price: {
-            type: Sequelize.DECIMAL(18, 2),
+            type: Sequelize.STRING(30),
             allowNull: false,
             validate: {
               notNull: true,
@@ -144,12 +151,31 @@ module.exports = (sequelize, Sequelize) => {
           },
 
           down_payment: {
-            type: Sequelize.DECIMAL(18, 2),
+            type: Sequelize.STRING(30),
             allowNull: false,
             validate: {
               notNull: true,
               notEmpty: true
             }
+          },
+
+          use_rsa: {
+            type: Sequelize.STRING(10),
+            allowNull: false,
+            validate: {
+              notNull: true,
+              notEmpty: true
+            }
+          },
+
+          current_rsa_balance: {
+            type: Sequelize.STRING(30),
+            
+          },
+
+          rsa_portion: {
+            type: Sequelize.STRING(30),
+          
           },
 
       },

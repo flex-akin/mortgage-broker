@@ -19,6 +19,8 @@ app.get("/", (req, res) => {
 const realtor = require("./routes/realtor.routes");
 app.use("/api/realtor", realtor);
 
+const transaction = require("./routes/transaction.routes");
+app.use("/api/transaction", transaction);
 
 const PORT = process.env.PORT
 
