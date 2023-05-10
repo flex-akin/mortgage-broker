@@ -36,6 +36,15 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 db.realtor = require("./realtors.models")(sequelize, Sequelize);
+db.transaction = require("./transactions.models")(sequelize, Sequelize);
+
+
+db.realtor.hasMany(db.transaction, {
+  sourceKey: "user_id",
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 
 module.exports = db;

@@ -71,7 +71,7 @@ exports.logIn = async (req, res) => {
         },
       });
       if (!realtor) {
-        res.status(404).json({
+        return res.status(404).json({
           success: false,
           message: "User not found",
         });
