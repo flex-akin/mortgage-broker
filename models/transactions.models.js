@@ -150,6 +150,16 @@ module.exports = (sequelize, Sequelize) => {
             }
           },
 
+          loan_request_amount: {
+            type: Sequelize.STRING(30),
+            allowNull: false,
+            validate: {
+              notNull: true,
+              notEmpty: true
+            }
+
+          },
+
           down_payment: {
             type: Sequelize.STRING(30),
             allowNull: false,
@@ -170,13 +180,16 @@ module.exports = (sequelize, Sequelize) => {
 
           current_rsa_balance: {
             type: Sequelize.STRING(30),
-            
           },
 
           rsa_portion: {
             type: Sequelize.STRING(30),
-          
           },
+
+          status: {
+            type: Sequelize.STRING(30),
+            defaultValue: "pending"
+          }
 
       },
       

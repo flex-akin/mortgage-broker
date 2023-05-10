@@ -82,29 +82,17 @@ module.exports = (sequelize, Sequelize) => {
 
           cv_URL: {
             type: Sequelize.STRING(100),
-            allowNull: false,
-            validate: {
-              notNull: true,
-              notEmpty: true
-            }
+
           },
 
           passport_URL: {
             type: Sequelize.STRING(100),
-            allowNull: false,
-            validate: {
-              notNull: true,
-              notEmpty: true
-            }
+
           },
 
           id_URL: {
             type: Sequelize.STRING(100),
-            allowNull: false,
-            validate: {
-              notNull: true,
-              notEmpty: true
-            }
+
           },
 
 

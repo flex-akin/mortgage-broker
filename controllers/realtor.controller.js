@@ -11,10 +11,10 @@ exports.createRealtor = async (req, res) => {
     var unique = new Date().valueOf();
     unique = String(unique).substring(5, 13)
 
-    const cv_URL = req.files.cv_URL[0];
-    const passport_URL = req.files.passport_URL[0];
-    const id_URL = req.files.id_URL[0];
-    const cert_URL = req.files.cert_URL ? req.files.cert_URL[0] : null;
+    const cv_URL = req.files.cv_URL ? req.files.cv_URL[0].location : null;
+    const passport_URL = req.files.passport_URL ? req.files.passport_URL[0].location : null;
+    const id_URL = req.files.id_URL ? req.files.id_URL[0].location : null;
+    const cert_URL = req.files.cert_URL ? req.files.cert_URL[0].location : null;
         
     const person = await Realtor.create({
       name: req.body.name,
@@ -27,10 +27,10 @@ exports.createRealtor = async (req, res) => {
       password: req.body.password,
       user_id: unique,
       id_type : req.body.id_type,
-      cv_URL: cv_URL.location,
-      passport_URL: passport_URL.location,
-      id_URL: id_URL.location,
-      cert_URL: cert_URL.location,
+      cv_URL: cv_URL,
+      passport_URL: passport_URL,
+      id_URL: id_URL,
+      cert_URL: cert_URL,
     });
     const realtor  = {
         name : req.body.name,
@@ -122,6 +122,31 @@ exports.logIn = async (req, res) => {
                 user_id : req.params.user_id
             }
         })
+
+    const cv_URL = req.files.cv_URL ? req.files.cv_URL[0].location : undefined;
+    const passport_URL = req.files.passport_URL ? req.files.passport_URL[0].location : undefined;
+    const id_URL = req.files.id_URL ? req.files.id_URL[0].location : undefined;
+    const cert_URL = req.files.cert_URL ? req.files.cert_URL[0].location : undefined;
+
+    console.log(cv_URL)
+
+    await Realtor.update({
+        name_of_business: req.body.name_of_business,
+        address: req.body.address,
+        phone_number: req.body.phone_number,
+        username : req.body.username,
+        id_number: req.body.id_number,
+        id_type : req.body.id_type,
+        cv_URL: cv_URL,
+        passport_URL: passport_URL,
+        id_URL: id_URL,
+        cert_URL: cert_URL,
+      },{
+        where : {
+            user_id : req.params.user_id
+        }
+      });
+
         res.status(200).json({
             success: true,
             message: "updated",
@@ -166,6 +191,49 @@ exports.logIn = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Email could not be sent at this time",
+            stack: error
+          });        
+    }
+  }
+
+
+  exports.changePassword = async(req, res) => {
+    try{
+        var realtor = await Realtor.findOne(
+            {
+                where :{
+                    user_id : req.params.user_id
+                }
+            }
+        )
+        const password = req.body.password
+        const checkPassword = bcrypt.compareSync(password, realtor.password);
+        if (!checkPassword) {
+          return res.status(400).json({
+            success: false,
+            message: "Information Mismatch, password is not invalid",
+          });
+        }
+
+        await Realtor.update({
+            password : req.body.new_password
+        },
+        {
+            where : {
+                user_id : req.params.user_id
+            }
+        })
+
+        res.status(200).json({
+            success: true,
+            message: "password has been changed",
+          });
+
+    }
+    catch(error){
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
             stack: error
           });        
     }
