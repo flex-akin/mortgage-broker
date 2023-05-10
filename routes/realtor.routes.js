@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router()
 const { uploadS3 } = require("../utils/multerS3");
-const { createRealtor, logIn, resetProfile } = require("../controllers/realtor.controller");
+const { createRealtor, logIn, resetProfile, suportEnquiry } = require("../controllers/realtor.controller");
 
 
 router.route("/createrealtor").post(uploadS3.fields([
@@ -13,6 +13,7 @@ router.route("/createrealtor").post(uploadS3.fields([
 
 router.route("/login").post(logIn)
 router.route("/resetprofile/:user_id").patch(resetProfile)
+router.route("/support/:user_id").post(suportEnquiry)
 
 module.exports = router
 

@@ -4,7 +4,7 @@ const sendToken = require("../utils/jwt")
 const bcrypt = require("bcryptjs")
 
 
-const {sendDetails} = require("../utils/signup.email");
+const {sendDetails, support} = require("../utils/signup.email");
 
 exports.createRealtor = async (req, res) => {
   try {
@@ -132,6 +132,40 @@ exports.logIn = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: error.message,
+            stack: error
+          });        
+    }
+  }
+
+  exports.suportEnquiry = async(req, res) => {
+    try{
+        var realtor = await Realtor.findOne(
+            {
+                where :{
+                    user_id : req.params.user_id
+                }
+            }
+        )
+        const data = {
+            name : realtor.name,
+            user_id : realtor.user_id,
+            subject : req.body.subject,
+            message : req.body.message
+        }
+        await support(data);
+
+
+        res.status(200).json({
+            success: true,
+            message: "your enqiry/support has been sent",
+            
+          });
+
+    }
+    catch(error){
+        return res.status(500).json({
+            success: false,
+            message: "Email could not be sent at this time",
             stack: error
           });        
     }

@@ -32,3 +32,20 @@ exports.sendDetails = async(details) =>{
         return {success: false, message: error}
       }
 }
+
+exports.support = async(details) =>{
+    try {
+        const source = fs.readFileSync(path.join(__dirname, './templates/support.hbs'), "utf8")
+        const template = handlebars.compile(source)
+        const data = details
+          var mailOptions = {
+              from: "info@imperialmortgagebank.com",
+              to: "akintolafelix2121@gmail.com",
+              html: template(data)
+            };
+            mailOptions.subject = details.subject
+            const reponse = await smtpTransporter.sendMail(mailOptions)
+      }catch(error){
+        return {success: false, message: error}
+      }
+}
