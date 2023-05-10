@@ -89,3 +89,56 @@ exports.getTransactions = async(req, res) => {
     }
 
 }
+
+
+exports.updateTransactionUplaods = async(req, res) => {
+  try {
+    const transaction_code = req.params.transaction_code
+      const files = req.files;
+  
+      if (files.photos) {
+        const len = req.files.photos.length;
+        for (let i = 0; i < len; i++) {
+          await Transaction_Upload.create({
+            fileUrl: req.files.photos[i].location,
+            fileUrlKey: req.files.photos[i].key,
+            fileType: req.files.photos[i].fieldname,
+            transaction_code: transaction_code,
+          });
+        }
+      }
+      if (files.offer) {
+        for (let i = 0; i < 1; i++) {
+          await Transaction_Upload.create({
+            fileUrl: req.files.offer[i].location,
+            fileUrlKey: req.files.offer[i].key,
+            fileType: req.files.offer[i].fieldname,
+            transaction_code: transaction_code,
+          });
+        }
+      }
+      if (files.cv) {
+        for (let i = 0; i < 1; i++) {
+          await Transaction_Upload.create({
+            fileUrl: req.files.cv[i].location,
+            fileUrlKey: req.files.cv[i].key,
+            fileType: req.files.cv[i].fieldname,
+            transaction_code: transaction_code,
+          });
+        }
+      }
+
+    res.status(201).json({
+      success: true,
+      message: "your upload is successful",
+    });
+  
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || error.errors[0].message,
+      stack: error,
+    });
+  }
+
+}

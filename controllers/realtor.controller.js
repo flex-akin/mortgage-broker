@@ -11,11 +11,7 @@ exports.createRealtor = async (req, res) => {
     var unique = new Date().valueOf();
     unique = String(unique).substring(5, 13)
 
-    const cv_URL = req.files.cv_URL ? req.files.cv_URL[0].location : null;
-    const passport_URL = req.files.passport_URL ? req.files.passport_URL[0].location : null;
-    const id_URL = req.files.id_URL ? req.files.id_URL[0].location : null;
-    const cert_URL = req.files.cert_URL ? req.files.cert_URL[0].location : null;
-        
+  
     const person = await Realtor.create({
       name: req.body.name,
       name_of_business: req.body.name_of_business,
@@ -27,10 +23,6 @@ exports.createRealtor = async (req, res) => {
       password: req.body.password,
       user_id: unique,
       id_type : req.body.id_type,
-      cv_URL: cv_URL,
-      passport_URL: passport_URL,
-      id_URL: id_URL,
-      cert_URL: cert_URL,
     });
     const realtor  = {
         name : req.body.name,
@@ -115,7 +107,7 @@ exports.logIn = async (req, res) => {
     }
   };
 
-  exports.resetProfile = async(req, res) => {
+  exports.updateUplaods = async(req, res) => {
     try{
         await Realtor.update(req.body,{
             where: {
@@ -128,15 +120,8 @@ exports.logIn = async (req, res) => {
     const id_URL = req.files.id_URL ? req.files.id_URL[0].location : undefined;
     const cert_URL = req.files.cert_URL ? req.files.cert_URL[0].location : undefined;
 
-    console.log(cv_URL)
 
     await Realtor.update({
-        name_of_business: req.body.name_of_business,
-        address: req.body.address,
-        phone_number: req.body.phone_number,
-        username : req.body.username,
-        id_number: req.body.id_number,
-        id_type : req.body.id_type,
         cv_URL: cv_URL,
         passport_URL: passport_URL,
         id_URL: id_URL,
@@ -149,7 +134,7 @@ exports.logIn = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: "updated",
+            message: "your uplaoda has been added",
           });
 
     }
@@ -211,10 +196,16 @@ exports.logIn = async (req, res) => {
         if (!checkPassword) {
           return res.status(400).json({
             success: false,
-            message: "Information Mismatch, password is not invalid",
+            message: "your previous password is not correct",
           });
         }
 
+        if (req.body.new_password != req.body.confirm_new_password){
+          return res.status(400).json({
+            success: false,
+            message: "your new password doesn't match",
+          });
+        }
         await Realtor.update({
             password : req.body.new_password
         },
@@ -238,3 +229,27 @@ exports.logIn = async (req, res) => {
           });        
     }
   }
+
+  exports.resetProfile = async (req, res) => {
+    try {
+     
+       await Realtor.update(req.body,{
+       where: {
+        user_id: req.params.user_id
+       }
+      });
+      res.status(200).json({
+        success: true,
+        message: "updated",
+      });
+    
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message || error.errors[0].message,
+        stack: error,
+      });
+    }
+  };
+  
+  

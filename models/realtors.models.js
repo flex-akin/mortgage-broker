@@ -53,21 +53,11 @@ module.exports = (sequelize, Sequelize) => {
 
           id_type: {
             type: Sequelize.STRING(100),
-            allowNull: false,
-            validate: {
-              notNull: true,
-              notEmpty: true
-            }
           },
 
           id_number: {
             type: Sequelize.STRING(50),
-            allowNull: false,
-            unique: true,
-            validate: {
-              notNull: true,
-              notEmpty: true
-            }
+
           },
 
           user_id: {

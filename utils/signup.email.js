@@ -26,7 +26,7 @@ exports.sendDetails = async(details) =>{
               to: details.email,
               html: template(data)
             };
-            mailOptions.subject = "USER CREDENTIALS";
+            mailOptions.subject = "Welcome to our Mortgage Brokerage Platform";
             const reponse = await smtpTransporter.sendMail(mailOptions)
       }catch(error){
         return {success: false, message: error}
@@ -40,7 +40,7 @@ exports.support = async(details) =>{
         const data = details
           var mailOptions = {
               from: "info@imperialmortgagebank.com",
-              to: "akintolafelix2121@gmail.com",
+              to: "realtorsupport@imperialmortgagebank.com",
               html: template(data)
             };
             mailOptions.subject = details.subject
