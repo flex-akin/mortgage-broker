@@ -4,6 +4,10 @@ const Realtor = db.realtor
 const bcrypt = require("bcryptjs")
 const sendToken = require("../utils/jwt")
 const AdminUploads = db.admin_uploads
+const Transactions = db.transaction
+const Transaction_Upload = db.transaction_upload
+
+
 
 
 exports.adminSignUp = async(req, res) => {
@@ -19,7 +23,7 @@ exports.adminSignUp = async(req, res) => {
         return res.status(500).json({
             success: false,
             message: "internal server error",
-            error: error.message
+            error: error
     })
 }
 }
@@ -134,3 +138,72 @@ exports.logIn = async (req, res) => {
           })
     }
   }
+
+  exports.getTransactions = async(req, res) => {
+    try{
+        const transactions = await Transactions.findAll()
+
+        res.status(200).json({
+            success: true,
+            transactions
+          });
+
+    }
+    catch(error){
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+            stack: error
+          });        
+    }
+
+}
+
+
+exports.transactionCompleted = async(req, res) => {
+    try{
+        await Transactions.update({
+            status : "completed",
+        },{
+            where : {
+                transaction_code : req.params.transaction_code
+            }
+        })
+        res.status(200).json({
+            success : true,
+            message : 'updated'
+        })
+    }
+    catch(error){
+            return res.status(500).json({
+                success: false,
+                message: error.message,
+                stack: error
+              });        
+    }
+}
+
+
+
+exports.getSingleTransaction = async(req, res) => {
+    try{
+       const transaction = await Transactions.findOne(
+        {
+            where : {
+                transaction_code : req.params.transaction_code
+            },
+            include : [Transaction_Upload]
+        })
+        res.status(200).json({
+            success : true,
+            transaction
+        })
+    }
+    catch(error){
+            return res.status(500).json({
+                success: false,
+                message: error.message,
+                stack: error
+              });        
+    }
+}
