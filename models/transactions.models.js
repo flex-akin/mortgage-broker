@@ -134,11 +134,7 @@ module.exports = (sequelize, Sequelize) => {
 
           property_format: {
             type: Sequelize.STRING(100),
-            allowNull: false,
-            validate: {
-              notNull: true,
-              notEmpty: true
-            }
+
           },
 
           property_price: {

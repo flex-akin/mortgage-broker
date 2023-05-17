@@ -74,7 +74,7 @@ exports.logIn = async (req, res) => {
       if (!checkPassword) {
         return res.status(400).json({
           success: false,
-          message: "Information Mismatch, password is not invalid",
+          message: "Information Mismatch, password is invalid",
         });
       }
       const realtorDetails = {

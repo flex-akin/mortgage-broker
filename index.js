@@ -22,6 +22,9 @@ app.use("/api/realtor", realtor);
 const transaction = require("./routes/transaction.routes");
 app.use("/api/transaction", transaction);
 
+const admin = require("./routes/admin.routes");
+app.use("/api/admin", admin);
+
 const PORT = process.env.PORT
 
 db.sequelize.sync().then((res) => {
