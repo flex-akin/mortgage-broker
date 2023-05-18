@@ -3,6 +3,7 @@ const Admin = db.admin
 const Realtor = db.realtor
 const bcrypt = require("bcryptjs")
 const sendToken = require("../utils/jwt")
+const { sendAdminDetails } = require("../utils/signup.email")
 const AdminUploads = db.admin_uploads
 const Transactions = db.transaction
 const Transaction_Upload = db.transaction_upload
@@ -12,7 +13,42 @@ const Transaction_Upload = db.transaction_upload
 
 exports.adminSignUp = async(req, res) => {
     try{
-        const admin = await Admin.create(req.body)
+
+const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+function generateString() {
+    let result = 'pwd';
+    const charactersLength = characters.length;
+    for ( let i = 0; i < 10; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
+}
+console.log(req.user)
+if (req.user.email != "ayo.olowookere@imperialmortgagebank.com"){
+  return res.status(401).json({
+    success: false,
+    message: "You are unauthorized",
+  });
+}  
+
+
+      const data = req.body
+      const password = generateString()
+      data.password = password
+
+
+      const adminSignUpEmail = sendAdminDetails(data)
+      if (adminSignUpEmail && adminSignUpEmail.success == false) {
+        return res.status(422).json({
+          success: false,
+          message: "email could not be sent at this time",
+        });
+      }
+      console.log(data)
+
+        const admin = await Admin.create(data)
 
         res.status(201).json({
             success : true,
@@ -205,5 +241,72 @@ exports.getSingleTransaction = async(req, res) => {
                 message: error.message,
                 stack: error
               });        
+    }
+}
+
+
+exports.getAllAdmin = async (req, res) => {
+    try {
+        const allAdmin = await Admin.findAll()
+
+        res.status(200).json({
+            success : true,
+            allAdmin
+        })
+        
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+            stack: error
+          }); 
+        
+    }
+}
+
+exports.changePassword = async (req, res) => {
+    try {
+        var admin = await Admin.findOne(
+            {
+                where :{
+                    id : req.params.id
+                }
+            }
+        )
+
+        if (req.user.email != admin.email){
+          return res.status(401).json({
+            success: false
+          });
+        }
+        const password = req.body.password
+        const checkPassword = bcrypt.compareSync(password, admin.password);
+        if (!checkPassword) {
+          return res.status(400).json({
+            success: false,
+            message: "your previous password is not correct",
+          });
+        }
+
+        await Admin.update({
+            password : req.body.new_password
+        },
+        {
+            where : {
+                    id : req.params.id
+            }
+        })
+        res.status(200).json({
+            success: true,
+            message: "password has been changed",
+          });   
+        
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+            stack: error
+          }); 
+        
     }
 }
