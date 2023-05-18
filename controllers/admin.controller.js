@@ -89,7 +89,8 @@ exports.logIn = async (req, res) => {
       }
       const adminDetails = {
         name: admin.name,
-        email: admin.email
+        email: admin.email,
+        id : admin.id
       };
   
       const token = sendToken(adminDetails, res);
