@@ -394,7 +394,7 @@ exports.replySupport = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data : data
+      message : "message sent"
     });
   } catch (error) {
     return res.status(500).json({
