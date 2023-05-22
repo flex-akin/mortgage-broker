@@ -34,7 +34,6 @@ exports.sendDetails = async(details) =>{
 }
 
 exports.support = async(details) =>{
-    try {
         const source = fs.readFileSync(path.join(__dirname, './templates/support.hbs'), "utf8")
         const template = handlebars.compile(source)
         const data = details
@@ -43,11 +42,9 @@ exports.support = async(details) =>{
               to: "realtorsupport@imperialmortgagebank.com",
               html: template(data)
             };
-            mailOptions.subject = details.subject
+            mailOptions.subject = "You have a support email"
             const reponse = await smtpTransporter.sendMail(mailOptions)
-      }catch(error){
-        return {success: false, message: error}
-      }
+     
 }
 
 exports.sendAdminDetails = async(details) =>{
@@ -61,8 +58,22 @@ exports.sendAdminDetails = async(details) =>{
             html: template(data)
           };
           mailOptions.subject = "Welcome to our Mortgage Brokerage Platform";
-          const reponse = await smtpTransporter.sendMail(mailOptions)
+          const response = await smtpTransporter.sendMail(mailOptions)
     }catch(error){
       return {success: false, message: error}
     }
+}
+
+
+exports.replySupport = async(details) =>{
+    
+      var mailOptions = {
+            from: "info@imperialmortgagebank.com",
+            to: details.email,
+            text : details.message
+          };
+          mailOptions.subject = details.subject
+        
+          const response = await smtpTransporter.sendMail(mailOptions)
+          
 }

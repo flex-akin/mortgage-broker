@@ -35,7 +35,8 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.realtor = require("./realtors.models")(sequelize, Sequelize);
+db.realtor = require("./realtors.models")(sequelize, Sequelize)
+db.support_enquiry = require("./supportEnquiry.models")(sequelize, Sequelize);
 db.transaction = require("./transactions.models")(sequelize, Sequelize);
 db.transaction_upload = require("./transactionsUploads.models")(sequelize, Sequelize);
 
@@ -51,6 +52,20 @@ db.realtor.hasMany(db.transaction, {
 db.transaction.hasMany(db.transaction_upload, {
   sourceKey: "transaction_code",
   foreignKey: "transaction_code",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+db.transaction.hasMany(db.transaction_upload, {
+  sourceKey: "transaction_code",
+  foreignKey: "transaction_code",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+db.realtor.hasMany(db.support_enquiry, {
+  sourceKey: "user_id",
+  foreignKey: "user_id",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });

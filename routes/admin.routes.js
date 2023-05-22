@@ -1,5 +1,5 @@
 const express = require("express")
-const { adminSignUp, logIn, getAllRealtors, uploadAdminDocs, getUploads, getTransactions, transactionCompleted, getSingleTransaction, getAllAdmin, changePassword, getSingleRealtors, deleteResource } = require("../controllers/admin.controller")
+const { adminSignUp, logIn, getAllRealtors, uploadAdminDocs, getUploads, getTransactions, transactionCompleted, getSingleTransaction, getAllAdmin, changePassword, getSingleRealtors, deleteResource, getAllSupport, getSingleSupport, replySupport} = require("../controllers/admin.controller")
 const router = express.Router()
 const isAdmin = require("../middlewares/verify.jwt")
 const { uploadS3 } = require("../utils/multerS3");
@@ -18,5 +18,9 @@ router.route("/getalladmin").get(isAdmin, getAllAdmin)
 router.route("/changepassword/:id").post(isAdmin, changePassword)
 router.route("/singlerealtor/:id").get(isAdmin, getSingleRealtors)
 router.route("/deleteresource/:id").delete(isAdmin, deleteResource)
+router.route("/getallsupport").get(getAllSupport)
+router.route("/getsinglesupport/:id").get(getSingleSupport)
+router.route("/replysupport/:id").post(replySupport)
+
 
 module.exports = router
