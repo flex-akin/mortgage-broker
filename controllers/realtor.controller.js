@@ -295,30 +295,7 @@ exports.mortgageCalculator = async (req, res) => {
 
 exports.getAllMortgageCalc = async (req, res) => {
   try {
-    const mCalc = await MortgageCalculator.findAll();
-
-    const trasform = (x) => {
-      const y = parseFloat(x);
-      return y.toLocaleString();
-    };
-
-    const mortgageCalc = [];
-    
-    for (let i = 0; i < mCalc.length; i++) {
-      const data = {
-        monthlyIncome: trasform(mCalc[i].monthlyIncome),
-        propertyPrice: trasform(mCalc[i].propertyPrice),
-        equity: trasform(mCalc[i].equity),
-        loanAmount: trasform(mCalc[i].loanAmount),
-        monthlyRepaymentResult: trasform(mCalc[i].monthlyRepaymentResult),
-        age: mCalc[i].age,
-        tenure: mCalc[i].tenure,
-        interestPerAnnum: mCalc[i].interestPerAnnum,
-        dtiResult: mCalc[i].dtiResult,
-      };
-      mortgageCalc.push(data);
-    }
-
+    const mortgageCalc = await MortgageCalculator.findAll();
     res.status(200).json({
       success: true,
       mortgageCalc,
