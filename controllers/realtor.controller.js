@@ -3,6 +3,7 @@ const Realtor = db.realtor;
 const sendToken = require("../utils/jwt");
 const bcrypt = require("bcryptjs");
 const SupportEnquiry = db.support_enquiry;
+const MortgageCalculator = db.mortgage_calculator;
 
 const { sendDetails, support } = require("../utils/signup.email");
 
@@ -236,6 +237,91 @@ exports.resetProfile = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "updated",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || error.errors[0].message,
+      stack: error,
+    });
+  }
+};
+
+exports.mortgageCalculator = async (req, res) => {
+  try {
+    const data = req.body;
+    const PMT = (rate, nper, pv, fv, type) => {
+      let pmt, pvif;
+
+      fv || (fv = 0);
+      type || (type = 0);
+
+      if (rate === 0) return -(pv + fv) / nper;
+
+      pvif = Math.pow(1 + rate, nper);
+      pmt = (-rate * (pv * pvif + fv)) / (pvif - 1);
+
+      if (type === 1) pmt /= 1 + rate;
+      return pmt;
+    };
+
+    const rate = 22 / 1200;
+    const loanAmount = parseFloat(data.loanAmount);
+    const tenor = parseFloat(data.tenure);
+    const monthlyIncome = parseFloat(data.monthlyIncome);
+
+    var monthlyRepayment = PMT(rate, tenor * 12, -1 * loanAmount);
+    monthlyRepayment = monthlyRepayment + 0.001 * loanAmount;
+    var dti = (monthlyRepayment / monthlyIncome) * 100;
+
+    data.dtiResult = dti.toFixed(2);
+    data.monthlyRepaymentResult = monthlyRepayment.toFixed(2);
+    data.user_id = req.params.user_id;
+
+    const mCalc = await MortgageCalculator.create(data);
+    res.status(201).json({
+      success: true,
+      message: "created",
+      mCalc,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || error.errors[0].message,
+      stack: error,
+    });
+  }
+};
+
+exports.getAllMortgageCalc = async (req, res) => {
+  try {
+    const mCalc = await MortgageCalculator.findAll();
+
+    const trasform = (x) => {
+      const y = parseFloat(x);
+      return y.toLocaleString();
+    };
+
+    const mortgageCalc = [];
+    
+    for (let i = 0; i < 2; i++) {
+      const data = {
+        monthlyIncome: trasform(mCalc[i].monthlyIncome),
+        propertyPrice: trasform(mCalc[i].propertyPrice),
+        equity: trasform(mCalc[i].equity),
+        loanAmount: trasform(mCalc[i].loanAmount),
+        monthlyRepaymentResult: trasform(mCalc[i].monthlyRepaymentResult),
+        age: mCalc[i].age,
+        tenure: mCalc[i].tenure,
+        interestPerAnnum: mCalc[i].interestPerAnnum,
+        dtiResult: mCalc[i].dtiResult,
+      };
+      mortgageCalc.push(data);
+    }
+
+    res.status(200).json({
+      success: true,
+      mortgageCalc,
     });
   } catch (error) {
     return res.status(500).json({

@@ -39,7 +39,7 @@ db.realtor = require("./realtors.models")(sequelize, Sequelize)
 db.support_enquiry = require("./supportEnquiry.models")(sequelize, Sequelize);
 db.transaction = require("./transactions.models")(sequelize, Sequelize);
 db.transaction_upload = require("./transactionsUploads.models")(sequelize, Sequelize);
-
+db.mortgage_calculator = require("./mortgageCalculator.models")(sequelize, Sequelize);
 
 
 db.realtor.hasMany(db.transaction, {
@@ -69,5 +69,13 @@ db.realtor.hasMany(db.support_enquiry, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
+
+db.realtor.hasMany(db.mortgage_calculator, {
+  sourceKey: "user_id",
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
 
 module.exports = db;

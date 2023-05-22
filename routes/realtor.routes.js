@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router()
 const { uploadS3 } = require("../utils/multerS3");
-const { createRealtor, logIn, resetProfile, suportEnquiry, changePassword, updateUplaods } = require("../controllers/realtor.controller");
+const { createRealtor, logIn, resetProfile, suportEnquiry, changePassword, updateUplaods, mortgageCalculator, getAllMortgageCalc } = require("../controllers/realtor.controller");
 
 
 router.route("/createrealtor").post(createRealtor);
@@ -17,8 +17,8 @@ router.route("/updateuploads/:user_id").patch(uploadS3.fields([
 ]), updateUplaods)
 router.route("/support/:user_id").post(suportEnquiry)
 router.route("/changepassword/:user_id").patch(changePassword)
-
-
+router.route("/mortgagecalculator/:user_id").post(mortgageCalculator)
+router.route("/getallmortgagecalculation").get(getAllMortgageCalc)
 
 module.exports = router
 
