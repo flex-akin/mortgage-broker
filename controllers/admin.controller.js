@@ -311,3 +311,51 @@ exports.changePassword = async (req, res) => {
         
     }
 }
+
+
+exports.getSingleRealtors = async (req, res) => {
+  try {
+     const realtor = await Realtor.findOne({
+      where : {
+        id : req.params.id
+      }
+     })
+     res.status(200).json({
+      success: true,
+      realtor,
+    });
+
+  }
+  catch (error){
+      return res.status(500).json({
+          success: false,
+          message: error.message,
+          stack: error
+        });     
+  }
+}
+
+
+exports.deleteResource = async (req, res) => {
+  try {
+    await AdminUploads.destroy({
+      where : {
+        id : req.params.id
+
+      }
+      
+    })
+    res.status(200).json({
+      success: true,
+      message : "deleted",
+    });
+  }
+  catch (error){
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+      stack: error
+    });    
+
+  }
+}
