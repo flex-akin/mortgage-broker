@@ -304,7 +304,7 @@ exports.getAllMortgageCalc = async (req, res) => {
 
     const mortgageCalc = [];
     
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < mCalc.length; i++) {
       const data = {
         monthlyIncome: trasform(mCalc[i].monthlyIncome),
         propertyPrice: trasform(mCalc[i].propertyPrice),
